@@ -2,6 +2,9 @@ package de.w3is.pixelflut.client;
 
 import org.apache.commons.cli.*;
 
+import java.util.Optional;
+import java.util.Random;
+
 /**
  * @author <a href="mailto:simon.weis@1und1.de">Simon Weis</a>
  * @since 5/27/16.
@@ -39,8 +42,32 @@ public class PixelflutClient {
             pixelPicture.scaleTo(Integer.parseInt(cli.getOptionValue("scaleTo")));
         }
 
-        int offX = Integer.parseInt(cli.getOptionValue("ox", "0"));
-        int offY = Integer.parseInt(cli.getOptionValue("oy", "0"));
+        int offX;
+        int offY;
+
+        if (cli.hasOption("random")) {
+
+            Size pixelflutSize;
+
+            Optional<Size> optionalPixelflutSize = pixelflut.getSize();
+
+            if (optionalPixelflutSize.isPresent()) {
+                pixelflutSize = optionalPixelflutSize.get();
+            } else {
+                System.out.println("Pixelflut doesn't support SIZE command. Assume 800x600.");
+                pixelflutSize = new Size(800, 600);
+            }
+
+            Random random = new Random();
+            offX = random.nextInt(pixelflutSize.getX());
+            offY = random.nextInt(pixelflutSize.getY());
+
+            System.out.println("Use random offset of " + offX + " " + offY);;
+
+        } else {
+            offX = Integer.parseInt(cli.getOptionValue("ox", "0"));
+            offY = Integer.parseInt(cli.getOptionValue("oy", "0"));
+        }
 
         for(int i=1; true; i++) {
             System.out.println("Round " + i);
@@ -80,6 +107,8 @@ public class PixelflutClient {
 
         options.addOption(Option.builder("s").longOpt("scaleTo").type(Integer.class)
                 .hasArg().desc("Scale image down to ARG%").build());
+
+        options.addOption(Option.builder("r").longOpt("random").desc("Use random offset").build());
         return options;
     }
 }

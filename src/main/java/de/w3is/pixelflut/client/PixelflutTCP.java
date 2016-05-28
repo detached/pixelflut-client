@@ -22,10 +22,8 @@ public class PixelflutTCP implements Pixelflut
 
     @Override
     public Optional<Size> getSize() throws IOException {
-        System.out.println("=> SIZE");
         printWriter.println("SIZE");
         String response = bufferedReader.readLine();
-        System.out.println("<= " + response);
 
         if (response != null && response.startsWith("SIZE")) {
             String[] parts = response.split("\\s+");
