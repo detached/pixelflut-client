@@ -2,6 +2,7 @@ package de.w3is.pixelflut.client;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.Optional;
 
 /**
  * @author <a href="mailto:simon.weis@1und1.de">Simon Weis</a>
@@ -20,8 +21,8 @@ public class PixelflutUDP implements Pixelflut{
     }
 
     @Override
-    public Size getSize() throws IOException {
-        return new Size(311, 207);
+    public Optional<Size> getSize() throws IOException {
+        return Optional.empty();
     }
 
     @Override

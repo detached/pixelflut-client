@@ -3,6 +3,7 @@ package de.w3is.pixelflut.client;
 import java.awt.*;
 import java.io.*;
 import java.net.Socket;
+import java.util.Optional;
 
 /**
  * @author <a href="mailto:simon.weis@1und1.de">Simon Weis</a>
@@ -21,7 +22,7 @@ public class PixelflutTCP implements Pixelflut
     }
 
     @Override
-    public Size getSize() throws IOException {
+    public Optional<Size> getSize() throws IOException {
         System.out.println("=> SIZE");
         printWriter.println("SIZE");
         String response = bufferedReader.readLine();
@@ -34,7 +35,7 @@ public class PixelflutTCP implements Pixelflut
                 throw new IllegalStateException("Invalid SIZE: " + response);
             }
 
-            return new Size(Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
+            return Optional.of(new Size(Integer.parseInt(parts[1]), Integer.parseInt(parts[2])));
 
         } else {
             throw new IllegalStateException("Expected SIZE but server said: " + response);
