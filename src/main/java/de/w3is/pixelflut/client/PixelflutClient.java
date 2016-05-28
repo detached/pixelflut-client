@@ -35,6 +35,10 @@ public class PixelflutClient {
 
         PixelPicture pixelPicture = new PixelPicture(cli.getOptionValue("file"));
 
+        if (cli.hasOption("scaleTo")) {
+            pixelPicture.scaleTo(Integer.parseInt(cli.getOptionValue("scaleTo")));
+        }
+
         int offX = Integer.parseInt(cli.getOptionValue("ox", "0"));
         int offY = Integer.parseInt(cli.getOptionValue("oy", "0"));
 
@@ -73,6 +77,9 @@ public class PixelflutClient {
                 .hasArg().desc("The offset of the y axis").build());
 
         options.addOption(Option.builder("u").longOpt("udp").desc("Use udp protocol").build());
+
+        options.addOption(Option.builder("s").longOpt("scaleTo").type(Integer.class)
+                .hasArg().desc("Scale image down to ARG%").build());
         return options;
     }
 }

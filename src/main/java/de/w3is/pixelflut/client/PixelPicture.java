@@ -22,12 +22,20 @@ public class PixelPicture {
         bufferedImage = ImageIO.read(new File(path));
     }
 
-    public void scaleTo(Size size) {
-        BufferedImage scaledImage = new BufferedImage(size.getX(), size.getY(), bufferedImage.getType());
+    public void scaleTo(int value) {
+
+        if (value < 0) {
+            throw new IllegalArgumentException("Can't scale to negative value");
+        }
+
+        int newX = bufferedImage.getWidth() * value / 100;
+        int newY = bufferedImage.getHeight() * value /100;
+        System.out.println("Scale by " + value + " to " + newX + " " + newY);
+        BufferedImage scaledImage = new BufferedImage(newX, newY, bufferedImage.getType());
         Graphics2D graphics = scaledImage.createGraphics();
         graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
-        graphics.drawImage(bufferedImage, 0, 0, size.getX(), size.getY(), 0, 0, bufferedImage.getWidth(),
+        graphics.drawImage(bufferedImage, 0, 0, newX, newY, 0, 0, bufferedImage.getWidth(),
                 bufferedImage.getHeight(), null);
         graphics.dispose();
         bufferedImage = scaledImage;
