@@ -1,10 +1,15 @@
-Ein Java client für https://github.com/defnull/pixelflut
+A Java client for https://github.com/defnull/pixelflut
 
 
 `````
-java -jar ./build/libs/pixelflut-client-1.0-SNAPSHOT.jar hostname port picture offsetX offsetY
-`````
-
-`````
-java -jar ./build/libs/pixelflut-client-1.0-SNAPSHOT.jar "127.0.0.1" 23421 ~/Pictures/pic.jpg 400 400
+usage: pixelflut-client -f <arg> -h <arg> [-ox <arg>] [-oy <arg>] -p <arg>
+       [-r] [-s <arg>] [-u]
+ -f,--file <arg>        The file that should be drawn
+ -h,--host <arg>        Hostname or IP of the Pixelflut server
+ -ox,--offset-x <arg>   The offset of the x axis
+ -oy,--offset-y <arg>   The offset of the y axis
+ -p,--port <arg>        Port to send packages to
+ -r,--random            Use random offset
+ -s,--scaleTo <arg>     Scale image down to ARG%
+ -u,--udp               Use udp protocol
 `````
