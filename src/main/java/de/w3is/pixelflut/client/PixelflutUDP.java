@@ -26,11 +26,11 @@ public class PixelflutUDP implements Pixelflut{
     }
 
     @Override
-    public void draw(Pixel pixel) {
-        byte[] bytes = String.format("PX %d %d %02X%02X%02X", pixel.getX(), pixel.getY(), pixel.getColor().getRed(), pixel.getColor().getGreen(), pixel.getColor().getBlue()).getBytes();
-        DatagramPacket sendPacket = new DatagramPacket(bytes, bytes.length, address, port);
+    public void send(Pixel pixel) {
+        byte[] payload = toMessage(pixel).getBytes();
+        DatagramPacket datagramPacket = new DatagramPacket(payload, payload.length, address, port);
         try {
-            datagramSocket.send(sendPacket);
+            datagramSocket.send(datagramPacket);
         } catch (IOException e) {
             e.printStackTrace();
         }

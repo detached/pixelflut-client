@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 /**
  * @author <a href="mailto:simon.weis@1und1.de">Simon Weis</a>
@@ -13,9 +14,11 @@ import java.util.*;
  */
 public class PixelPicture {
 
-    BufferedImage bufferedImage;
+    private BufferedImage bufferedImage;
+    private List<Pixel> pixelCache;
 
     public PixelPicture(String path) throws IOException {
+        System.out.println("Load " + path);
         bufferedImage = ImageIO.read(new File(path));
     }
 
@@ -32,19 +35,27 @@ public class PixelPicture {
         System.out.println("Scaled picture has " + bufferedImage.getWidth() + " " + bufferedImage.getHeight());
     }
 
-    public void printTo(Pixelflut pixelflutTCP, int offX, int offY) {
+    public void printTo(Pixelflut pixelflut, int offX, int offY) {
 
-        java.util.List<Pixel> pixels = new ArrayList<>();
+        List<Pixel> pixels;
 
-        for(int x = 0; x < bufferedImage.getWidth(); x++) {
-            for (int y = 0; y < bufferedImage.getHeight(); y++) {
-                Color color = new Color(bufferedImage.getRGB(x, y));
-                pixels.add(new Pixel(x + offX, y + offY, color));
+        if (pixelCache != null) {
+            pixels = pixelCache;
+        } else {
+            System.out.println("Prepare pixels");
+
+            pixels = new ArrayList<>();
+            for(int x = 0; x < bufferedImage.getWidth(); x++) {
+                for (int y = 0; y < bufferedImage.getHeight(); y++) {
+                    Color color = new Color(bufferedImage.getRGB(x, y));
+                    pixels.add(new Pixel(x + offX, y + offY, color));
+                }
             }
+            pixelCache = pixels;
+
+            System.out.println(pixels.size() + " pixels cached");
         }
 
-        while (true) {
-            pixels.stream().parallel().forEach(pixelflutTCP::draw);
-        }
+        pixels.stream().parallel().forEach(pixelflut::send);
     }
 }

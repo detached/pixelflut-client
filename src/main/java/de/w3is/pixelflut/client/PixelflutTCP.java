@@ -1,6 +1,5 @@
 package de.w3is.pixelflut.client;
 
-import java.awt.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.Optional;
@@ -43,8 +42,7 @@ public class PixelflutTCP implements Pixelflut
     }
 
     @Override
-    public void draw(Pixel pixel) {
-        String msg = String.format("PX %d %d %02X%02X%02X", pixel.getX(), pixel.getY(), pixel.getColor().getRed(), pixel.getColor().getGreen(), pixel.getColor().getBlue());
-        printWriter.println(msg);
+    public void send(Pixel pixel) {
+        printWriter.println(toMessage(pixel));
     }
 }

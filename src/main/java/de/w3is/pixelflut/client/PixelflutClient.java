@@ -38,7 +38,10 @@ public class PixelflutClient {
         int offX = Integer.parseInt(cli.getOptionValue("ox", "0"));
         int offY = Integer.parseInt(cli.getOptionValue("oy", "0"));
 
-        pixelPicture.printTo(pixelflut, offX, offY);
+        for(int i=1; true; i++) {
+            System.out.println("Round " + i);
+            pixelPicture.printTo(pixelflut, offX, offY);
+        }
     }
 
     private static void printHelp(Options options) {

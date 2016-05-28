@@ -1,6 +1,7 @@
 package de.w3is.pixelflut.client;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -9,5 +10,13 @@ import java.util.Optional;
  */
 public interface Pixelflut {
     Optional<Size> getSize() throws IOException;
-    void draw(Pixel pixel);
+    void send(Pixel pixel);
+
+    default String toMessage(Pixel pixel) {
+        return String.format("PX %d %d %02X%02X%02X",
+                pixel.getX(), pixel.getY(),
+                pixel.getColor().getRed(),
+                pixel.getColor().getGreen(),
+                pixel.getColor().getBlue());
+    }
 }
