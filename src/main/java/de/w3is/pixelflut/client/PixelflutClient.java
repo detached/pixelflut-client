@@ -1,6 +1,6 @@
 package de.w3is.pixelflut.client;
 
-import java.util.stream.Stream;
+import org.apache.commons.cli.*;
 
 /**
  * @author <a href="mailto:simon.weis@1und1.de">Simon Weis</a>
@@ -10,24 +10,66 @@ public class PixelflutClient {
 
     public static void main(String[] args) throws Exception {
 
-        if (args.length != 5) {
-            System.out.println("Pixelflut-client $host $port $image $offX $offY");
+        Options options = getOptions();
+
+        CommandLine cli;
+
+        try {
+            cli = parseArguments(args, options);
+        } catch (ParseException e) {
+            System.out.println(e.getMessage());
+            printHelp(options);
             return;
         }
 
-        String server = args[0];
-        int port = Integer.parseInt(args[1]);
+        String server = cli.getOptionValue("host");
+        int port = Integer.parseInt(cli.getOptionValue("port"));
 
-        PixelPicture pixelPicture = new PixelPicture(args[2]);
+        Pixelflut pixelflut;
 
-        int offX = Integer.parseInt(args[3]);
-        int offY = Integer.parseInt(args[4]);
+        if (cli.hasOption("udp")) {
+            pixelflut = new PixelflutUDP(server, port);
+        } else {
+            pixelflut = new PixelflutTCP(server, port);
+        }
 
-        //PixelflutTCP pixelflutTCP = new PixelflutTCP(server, port);
-        PixelflutUDP pixelflutUDP = new PixelflutUDP(server, port);
+        PixelPicture pixelPicture = new PixelPicture(cli.getOptionValue("file"));
 
-        //pixelPicture.scaleTo(pixelflutUDP.getSize());
+        int offX = Integer.parseInt(cli.getOptionValue("ox", "0"));
+        int offY = Integer.parseInt(cli.getOptionValue("oy", "0"));
 
-        pixelPicture.printTo(pixelflutUDP, offX, offY);
+        pixelPicture.printTo(pixelflut, offX, offY);
+    }
+
+    private static void printHelp(Options options) {
+        HelpFormatter helpFormatter = new HelpFormatter();
+        helpFormatter.printHelp("pixelflut-client", options, true);
+    }
+
+    private static CommandLine parseArguments(String[] args, Options options) throws ParseException {
+        CommandLineParser commandLineParser = new DefaultParser();
+        return commandLineParser.parse(options, args);
+    }
+
+    private static Options getOptions() {
+        Options options = new Options();
+
+        options.addOption(Option.builder("h").longOpt("host").type(String.class)
+                .hasArg().required().desc("Hostname or IP of the Pixelflut server").build());
+
+        options.addOption(Option.builder("p").longOpt("port").type(Integer.class)
+                .hasArg().required().desc("Port to send packages to").build());
+
+        options.addOption(Option.builder("f").longOpt("file").type(String.class)
+                .hasArg().required().desc("The file that should be drawn").build());
+
+        options.addOption(Option.builder("ox").longOpt("offset-x").type(Integer.class)
+                .hasArg().desc("The offset of the x axis").build());
+
+        options.addOption(Option.builder("oy").longOpt("offset-y").type(Integer.class)
+                .hasArg().desc("The offset of the y axis").build());
+
+        options.addOption(Option.builder("u").longOpt("udp").desc("Use udp protocol").build());
+        return options;
     }
 }
